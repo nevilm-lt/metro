@@ -9,6 +9,7 @@
  */
 
 'use strict';
+import type {OutputFnArg} from '../types.flow';
 
 const meta = require('../../shared/output/meta');
 
@@ -27,7 +28,7 @@ function asPlainBundle({
   requireCalls,
   sourceMapPath,
   enableIDInlining,
-}): {|
+}: OutputFnArg): {|
   code: string | Buffer,
   extraFiles?: Iterable<[string, string | Buffer]>,
   map: MixedSourceMap,

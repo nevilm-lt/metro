@@ -9,6 +9,7 @@
  */
 
 'use strict';
+import type {IdsForPathFn} from '../types.flow';
 
 const MAGIC_UNBUNDLE_NUMBER = require('../../shared/output/RamBundle/magic-number');
 const MAGIC_UNBUNDLE_FILENAME = 'UNBUNDLE';
@@ -30,7 +31,19 @@ function asMultipleFilesRamBundle({
   modules,
   requireCalls,
   preloadedModules,
-}): OutputResult<IndexMap> {
+}: $TEMPORARY$object<{
+  dependencyMapReservedName?: ?string,
+  enableIDInlining: boolean,
+  filename: string,
+  globalPrefix: string,
+  idsForPath: IdsForPathFn,
+  modules: Iterable<Module>,
+  preloadedModules: Set<string>,
+  ramGroupHeads: ?$ReadOnlyArray<string>,
+  requireCalls: Iterable<Module>,
+  segmentID: number,
+  sourceMapPath?: ?string,
+}>): OutputResult<IndexMap> {
   const idForPath = (x: {path: string, ...}) => idsForPath(x).moduleId;
   const [startup, deferred] = partition(modules, preloadedModules);
   const startupModules = [...startup, ...requireCalls];

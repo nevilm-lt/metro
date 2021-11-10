@@ -16,8 +16,9 @@ const path = require('path');
 const symbolicate = require('../symbolicate');
 
 const {PassThrough} = require('stream');
-const resolve = fileName => path.resolve(__dirname, '__fixtures__', fileName);
-const read = fileName => fs.readFileSync(resolve(fileName), 'utf8');
+const resolve = (fileName: string | $TEMPORARY$string<'directory'>) =>
+  path.resolve(__dirname, '__fixtures__', fileName);
+const read = (fileName: string) => fs.readFileSync(resolve(fileName), 'utf8');
 
 const execute = async (
   args: Array<string>,

@@ -9,6 +9,8 @@
  */
 
 'use strict';
+import type {IdsForPathFn, Dependency} from '../types.flow';
+import type {BasicSourceMap} from '../../../../metro-source-map/src/source-map';
 
 const buildSourcemapWithMetadata = require('../../shared/output/RamBundle/buildSourcemapWithMetadata.js');
 const invariant = require('invariant');
@@ -32,7 +34,19 @@ function asIndexedRamBundle({
   preloadedModules,
   ramGroupHeads,
   requireCalls,
-}): {|
+}: $TEMPORARY$object<{
+  dependencyMapReservedName?: ?string,
+  enableIDInlining: boolean,
+  filename: string,
+  globalPrefix: string,
+  idsForPath: IdsForPathFn,
+  modules: Iterable<Module>,
+  preloadedModules: Set<string>,
+  ramGroupHeads: ?$ReadOnlyArray<string>,
+  requireCalls: Iterable<Module>,
+  segmentID: number,
+  sourceMapPath?: ?string,
+}>): {|
   code: string | Buffer,
   extraFiles?: Iterable<[string, string | Buffer]>,
   map: IndexMap,
@@ -90,8 +104,27 @@ function asIndexedRamBundle({
 }
 
 function* subtree(
-  moduleTransport,
-  moduleTransportsByPath,
+  moduleTransport: {
+    code: string,
+    dependencies: Array<Dependency>,
+    id: number,
+    map: ?BasicSourceMap,
+    name: string,
+    sourcePath: string,
+    ...
+  },
+  moduleTransportsByPath: Map<
+    string,
+    {
+      code: string,
+      dependencies: Array<Dependency>,
+      id: number,
+      map: ?BasicSourceMap,
+      name: string,
+      sourcePath: string,
+      ...
+    },
+  >,
   seen: Set<number> = new Set(),
 ): Generator<number, void, void> {
   seen.add(moduleTransport.id);

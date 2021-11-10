@@ -25,7 +25,7 @@ ESLintTester.setDefaultConfig({
 
 const eslintTester = new ESLintTester();
 
-function strictCase(code, output) {
+function strictCase(code: string, output: string) {
   expect(typeof rule.messages.WEAK_NULL).toBe('string');
   return {
     code,
@@ -34,7 +34,7 @@ function strictCase(code, output) {
   };
 }
 
-function weakCase(code, output) {
+function weakCase(code: string, output: string) {
   expect(typeof rule.messages.CHECK_NULL).toBe('string');
   return {
     code,
