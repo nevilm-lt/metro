@@ -91,14 +91,21 @@ function resolve(
     } catch (error) {}
   }
 
-  const nodeModulesPaths = Array.from(context.nodeModulesPaths);
+  const nodeModulesPaths = [];
   let next = path.dirname(originModulePath);
-  let candidate;
-  do {
-    candidate = next;
-    nodeModulesPaths.push(path.join(candidate, 'node_modules'));
-    next = path.dirname(candidate);
-  } while (candidate !== next);
+  const {disableHierarchicalLookup} = context;
+
+  if (!disableHierarchicalLookup) {
+    let candidate;
+    do {
+      candidate = next;
+      nodeModulesPaths.push(path.join(candidate, 'node_modules'));
+      next = path.dirname(candidate);
+    } while (candidate !== next);
+  }
+
+  // Fall back to `nodeModulesPaths` after hierarchical lookup, similar to $NODE_PATH
+  nodeModulesPaths.push(...context.nodeModulesPaths);
 
   const extraPaths = [];
   const {extraNodeModules} = context;
