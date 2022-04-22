@@ -1,17 +1,15 @@
 ---
-framework: jest
+framework: mocha
 preRun:
-  command:
-    - yarn install
+     command:
+        - npm install
 preMerge:
   pattern:
-    - "scripts/__tests__/*-test.js"
-    - "packages/**/__tests__/*-test.js"
+    - "./test/*.js"
 postMerge:
   pattern:
-    - "scripts/__tests__/*-test.js"
-    - "packages/**/__tests__/*-test.js"
+    - "./test/*.js"
 postRun:
-  command:
-    - yarn --version
+     command:
+        - node --version
 version: 1.0
