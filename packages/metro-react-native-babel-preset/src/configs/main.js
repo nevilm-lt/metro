@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -53,7 +53,9 @@ const getPreset = (src, options) => {
 
   const extraPlugins = [];
   if (!options.useTransformReactJSXExperimental) {
-    extraPlugins.push([require('@babel/plugin-transform-react-jsx')]);
+    extraPlugins.push([
+      require('@babel/plugin-transform-react-jsx', {useBuiltIns: true}),
+    ]);
   }
 
   if (!options || !options.disableImportExportTransform) {
@@ -96,7 +98,10 @@ const getPreset = (src, options) => {
     extraPlugins.push([require('@babel/plugin-transform-sticky-regex')]);
   }
   if (!isHermesCanary) {
-    extraPlugins.push([require('@babel/plugin-transform-destructuring')]);
+    extraPlugins.push([
+      require('@babel/plugin-transform-destructuring'),
+      {useBuiltIns: true},
+    ]);
   }
   if (!isHermes && (isNull || hasClass || src.indexOf('...') !== -1)) {
     extraPlugins.push(
@@ -104,7 +109,7 @@ const getPreset = (src, options) => {
       [
         require('@babel/plugin-proposal-object-rest-spread'),
         // Assume no dependence on getters or evaluation order. See https://github.com/babel/babel/pull/11520
-        {loose: true},
+        {loose: true, useBuiltIns: true},
       ],
     );
   }
@@ -114,16 +119,20 @@ const getPreset = (src, options) => {
       {loose: true}, // dont 'a'.concat('b'), just use 'a'+'b'
     ]);
   }
-  if (isHermes && (isNull || src.indexOf('async') !== -1)) {
-    extraPlugins.push([require('@babel/plugin-transform-async-to-generator')]);
+  if (isNull || src.indexOf('async') !== -1) {
+    extraPlugins.push([
+      require('@babel/plugin-proposal-async-generator-functions'),
+    ]);
+    if (isHermes) {
+      extraPlugins.push([
+        require('@babel/plugin-transform-async-to-generator'),
+      ]);
+    }
   }
   if (!isHermes && (isNull || src.indexOf('**') !== -1)) {
     extraPlugins.push([
       require('@babel/plugin-transform-exponentiation-operator'),
     ]);
-  }
-  if (!isHermes && (isNull || src.indexOf('Object.assign')) !== -1) {
-    extraPlugins.push([require('@babel/plugin-transform-object-assign')]);
   }
   if (!isHermes && hasForOf) {
     extraPlugins.push([

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,7 +22,6 @@ var Transformer = require('../Transformer');
 var fs = require('fs');
 var {getDefaultValues} = require('metro-config/src/defaults');
 var {mergeConfig} = require('metro-config/src/loadConfig');
-const mkdirp = require('mkdirp');
 
 describe('Transformer', function () {
   let watchFolders;
@@ -53,8 +52,8 @@ describe('Transformer', function () {
     projectRoot = '/root';
     watchFolders = [projectRoot];
 
-    mkdirp.sync('/path/to');
-    mkdirp.sync('/root');
+    fs.mkdirSync('/path/to', {recursive: true});
+    fs.mkdirSync('/root', {recursive: true});
     fs.writeFileSync('/path/to/transformer.js', '');
 
     require('../getTransformCacheKey').mockClear();
